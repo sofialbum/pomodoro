@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 function App() {
-  const [minutes, setMinutes] = useState(1);
+  const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [selectedLength, setSelectedLength] = useState(1);
@@ -32,9 +32,6 @@ function App() {
 
 
 
-
-  
-
   const handleStartTimer = () => {
     setIsActive(true);
     
@@ -43,6 +40,12 @@ function App() {
   const handlePauseTimer = () => {
     setIsActive(false);
   };
+
+  const handleRestartTimer = () => {
+    setIsActive(false);
+    setMinutes(25)
+    setSeconds(0)
+  }
 
   const handlePomodoro = () => {
     setMinutes(25);
@@ -83,7 +86,7 @@ function App() {
         <h6>Controles</h6>
         <button onClick={handleStartTimer}>Start</button>
         <button onClick={handlePauseTimer}>Pause</button>
-        <button>Restart</button>
+        <button onClick={handleRestartTimer}>Restart</button>
       </div>
     </div>
   );
