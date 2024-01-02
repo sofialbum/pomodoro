@@ -1,75 +1,70 @@
-import "./App.css";
-import { useState, useEffect } from "react";
-
-let myInterval;
+import React, { useState, useEffect } from "react";
 
 function App() {
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(0);
-  const [selectedLength, setSelectedLength] = useState(true); // Estado de trabajo o descanso
-  const [isActive, setIsActive] = useState(false); // Estado del temporizador: activo o detenido
+  const [isActive, setIsActive] = useState(false);
+  const [selectedLength, setSelectedLength] = useState(1);
 
+  let myInterval;
 
-  // const decrementSeconds = () => {
-  //   setSeconds(seconds - 1)
-//   if(seconds === 0){
-  //     setMinutes(minutes - 1)
-  //   }
-  // }
-
-  const decrementSeconds = () => {
-    setSeconds((prevSeconds) => {
-      if (prevSeconds === 0) {
-        setMinutes((prevMinutes) => {
-          if (prevMinutes === 0) {
-            // Aquí podrías manejar el final del temporizador si es necesario
-            return 0; // Por ejemplo, detener el temporizador
-          }
-          return prevMinutes - 1; // Reducir los minutos
-        });
-        return 59; // Reiniciar los segundos a 59
-      } else {
-        return prevSeconds - 1; // Reducir los segundos
-      }
-    });
-  };
-  
-  const handleStartTimer = () => {
-      if (!isActive) {
-        myInterval = setInterval(decrementSeconds, 1000);
-        console.log(myInterval)
-        setIsActive(true);
-      }
-
-  };
-
-  
-  const handlePauseTimer = () => {
-    console.log(myInterval)
+  useEffect(() => {
     if (isActive) {
+      myInterval = setInterval(() => {
+        if (minutes === 0 && seconds === 0) {
+          clearInterval(myInterval);
+          setIsActive(false);
+        } else {
+          if (seconds === 0) {
+            setMinutes((prevMinutes) => prevMinutes - 1);
+            setSeconds(59);
+          } else {
+            setSeconds((prevSeconds) => prevSeconds - 1);
+          }
+        }
+      }, 1000);
+    } else {
       clearInterval(myInterval);
-      setIsActive(false);
     }
+
+    return () => clearInterval(myInterval);
+  }, [isActive, minutes, seconds]);
+
+
+
+
+  
+
+  const handleStartTimer = () => {
+    setIsActive(true);
+    
+  };
+
+  const handlePauseTimer = () => {
+    setIsActive(false);
   };
 
   const handlePomodoro = () => {
     setMinutes(25);
     setSeconds(0);
+    setIsActive(false);
   };
 
   const handleBreak = () => {
     setMinutes(5);
     setSeconds(0);
+    setIsActive(false);
   };
 
   const handleLongBreak = () => {
     setMinutes(15);
     setSeconds(0);
+    setIsActive(false);
   };
 
   return (
     <div className="App">
-      <section>
+       <section>
         <menu>
           <h1>Pomodoro Timer</h1>
           <button onClick={handlePomodoro}>Pomodoro</button>
