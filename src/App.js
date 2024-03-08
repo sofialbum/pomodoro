@@ -1,19 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo} from "react";
+let myInterval;
+
 
 function App() {
+  const durations = useMemo(() => [25, 5, 15], []);
+  let currentIndex = useRef(0);
+
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [selectedLength, setSelectedLength] = useState(1);
+  const [selectedLength, setSelectedLength] = useState(durations[currentIndex.current]);
 
-  let myInterval;
+  const switchToNextSession = useCallback(() => {
+    if (currentIndex < durations.length - 1) {
+      currentIndex++;
+    } else {
+      currentIndex.current = 0;
+    }
 
+    const selectedDuration = durations[currentIndex];
+    setSelectedLength(selectedDuration);
+
+    switch (selectedDuration) {
+      case 25:
+        setMinutes(25);
+        setSeconds(0);
+        break;
+      case 5:
+        setMinutes(5);
+        setSeconds(0);
+        break;
+      case 15:
+        setMinutes(15);
+        setSeconds(0);
+        break;
+      default:
+        // Manejar cualquier otro caso si es necesario
+        break;
+    }
+  }, [durations, currentIndex]);
+
+
+  
   useEffect(() => {
     if (isActive) {
       myInterval = setInterval(() => {
         if (minutes === 0 && seconds === 0) {
           clearInterval(myInterval);
           setIsActive(false);
+          switchToNextSession(selectedLength);
         } else {
           if (seconds === 0) {
             setMinutes((prevMinutes) => prevMinutes - 1);
@@ -28,8 +63,11 @@ function App() {
     }
 
     return () => clearInterval(myInterval);
-  }, [isActive, minutes, seconds]);
+  }, [isActive, minutes, seconds, selectedLength, switchToNextSession]);
 
+ 
+
+  
 
 
   const handleStartTimer = () => {
@@ -83,7 +121,7 @@ function App() {
       </section>
 
       <div>
-        <h6>Controles</h6>
+        <h6>Controllers</h6>
         <button onClick={handleStartTimer}>Start</button>
         <button onClick={handlePauseTimer}>Pause</button>
         <button onClick={handleRestartTimer}>Restart</button>
