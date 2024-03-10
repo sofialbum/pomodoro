@@ -12,13 +12,13 @@ function App() {
   const [selectedLength, setSelectedLength] = useState(durations[currentIndex.current]);
 
   const switchToNextSession = useCallback(() => {
-    if (currentIndex < durations.length - 1) {
-      currentIndex++;
+    if (currentIndex.current < durations.length - 1) {
+      currentIndex.current++;
     } else {
       currentIndex.current = 0;
     }
 
-    const selectedDuration = durations[currentIndex];
+    const selectedDuration = durations[currentIndex.current];
     setSelectedLength(selectedDuration);
 
     switch (selectedDuration) {
